@@ -65,6 +65,7 @@ h1 {
 #board > .item.done:hover,
 #board > .item.done:focus {
 	background-color: red;
+	cursor: default;
 }
 
 #result {
