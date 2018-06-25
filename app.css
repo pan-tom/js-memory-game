@@ -1,0 +1,74 @@
+body {
+	margin: 15px;
+	background: white;
+	font-size: 16px;
+	font-family: Tahoma, Geneva, sans-serif;
+}
+
+h1 {
+	margin: 15px 0;
+	text-align: center;
+	font-size: 22px;
+	font-weight: normal;
+}
+
+#board {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+	text-align: center;
+	margin: 0 auto;
+	max-width: 400px;
+}
+
+#board > .item {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 60px;
+	height: 60px;
+	margin: 5px;
+	color: white;
+	border: solid 1px #eee;
+	cursor: pointer;
+	background-color: green;
+	border: solid 1px green;
+	transition: all 0.5s ease;
+}
+
+#board > .item > b {
+	transition: opacity 0.5s;
+	opacity: 0;
+	font-size: 24px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#board > .item > b.active {
+	opacity: 1;
+}
+
+#board > .item:hover,
+#board > .item:focus {
+	background-color: yellow;
+}
+
+#board > .item.opened,
+#board > .item.opened:hover,
+#board > .item.opened:focus {
+	background-color: blue;
+}
+
+#board > .item.done,
+#board > .item.done:hover,
+#board > .item.done:focus {
+	background-color: red;
+}
+
+#result {
+	text-align: center;
+	font-size: 14px;
+	line-height: 20px;
+}
