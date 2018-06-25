@@ -5,36 +5,34 @@
 	var totalItems = 20;
 
 	// game board
-	for(var i=0; i<totalItems; i++) {
-		document.getElementById('board').innerHTML += '<span id="item_'+(i+1)+'" class="item"><b></b></span>';
+	var makeBoard = function() {
+		for(var i=0; i<totalItems; i++) {
+			document.getElementById('board').innerHTML += '<span id="item_'+(i+1)+'" class="item"><b></b></span>';
+		}
+		document.getElementById('result').innerHTML = '<p>Failures: <span id="fails">0</span><br>Time: <span id="timer">00:00:00</span></p>';
 	}
-
-	document.getElementById('result').innerHTML = '<p>Failures: <span id="fails">0</span><br>Time: <span id="timer">00:00:00</span></p>';
 
 	// random pairs
 	var pairs = [];
-	var number = 1;
-	var evenFlag = 0;
-	do {
-		
-		// from 1 to totalItems
-		var index = Math.floor(Math.random()*totalItems) + 1;
-
-		if(typeof pairs['item_'+index] === 'undefined') {
-
-			pairs['item_'+index] = number;
+	var createPairs = function() {
+		var number = 1;
+		var evenFlag = 0;
+		do {
 			
-			if((++evenFlag)%2 === 0) {
-				number++;
+			// from 1 to totalItems
+			var index = Math.floor(Math.random()*totalItems) + 1;
+
+			if(typeof pairs['item_'+index] === 'undefined') {
+
+				pairs['item_'+index] = number;
+				
+				if((++evenFlag)%2 === 0) {
+					number++;
+				}
+
 			}
 
-		}
-
-	} while (number <= totalItems/2);
-
-	// fails counter
-	var setFails = function(val) {
-		document.getElementById('fails').innerText = val;
+		} while (number <= totalItems/2);
 	}
 
 	// zero padding
@@ -56,89 +54,95 @@
 	}
 
 	// game actions
-	var fails = 0;
-	var done = 0;
-	var openedItem = null;
-	var disableClick = false;
-	var items = document.getElementsByClassName('item');
-	for(var i=0; i<items.length; i++) {
-		(function(index) {
-			items[index].onclick = function() {
+	var startGame = function() {
+		var fails = 0;
+		var done = 0;
+		var openedItem = null;
+		var disableClick = false;
+		var items = document.getElementsByClassName('item');
+		for(var i=0; i<items.length; i++) {
 
-				if(timerInt === null) {
-					startTimer();
-				}
+			(function(index) {
 
-				if(!disableClick) {
-				
-					var item = items[index];
+				// item clicked
+				items[index].onclick = function() {
 
-					if(!item.classList.contains('done')) {
+					if(timerInt === null) {
+						startTimer();
+					}
 
-						var pair = pairs[item.getAttribute('id')];
-						var itemText = item.getElementsByTagName('b')[0];
+					if(!disableClick) {
+					
+						var item = items[index];
 
-						itemText.innerText = setPad(pair);
-						itemText.classList.add('active');
+						if(!item.classList.contains('done')) {
 
-						// css classes
-						if(item.classList.contains('opened')) {
-							item.classList.remove('opened');
-						} else {
-							item.classList.add('opened');
-						}
-						
-						// pair comparison
-						if(openedItem === null) {
+							var pair = pairs[item.getAttribute('id')];
+							var itemText = item.getElementsByTagName('b')[0];
 
-							// just one item opened
-							openedItem = item;
+							itemText.innerText = setPad(pair);
+							itemText.classList.add('active');
 
-						} else if(openedItem !== item && pairs[openedItem.getAttribute('id')] === pair) {
+							// css classes
+							if(item.classList.contains('opened')) {
+								item.classList.remove('opened');
+							} else {
+								item.classList.add('opened');
+							}
 							
-							// pair matched
-							disableClick = true;
-							setTimeout(function() {
-								item.classList.add('done');
-								item.classList.remove('opened');
-								openedItem.classList.add('done');
-								openedItem.classList.remove('opened');
-								openedItem = null;
-								disableClick = false;
-								setTimeout(function() {
-									if(++done*2 == totalItems) {
-										stopTimer();
-										document.getElementById('board').innerHTML = '<p>Congratulations!<br><a href="./">play again</p>';
-									}
-								}, 1000);
-							}, 500);
+							// pair comparison
+							if(openedItem === null) {
 
-						} else {
+								// just one item opened
+								openedItem = item;
 
-							// no match
-							disableClick = true;
-							setTimeout(function() {
+							} else if(openedItem !== item && pairs[openedItem.getAttribute('id')] === pair) {
 								
-								var openedItemText = openedItem.getElementsByTagName('b')[0];
-
-								item.classList.remove('opened');
-								openedItem.classList.remove('opened');
-
-								itemText.classList.remove('active');
-								openedItemText.classList.remove('active');
-
+								// pair matched
+								disableClick = true;
 								setTimeout(function() {
-									itemText.innerText = '';
-									openedItemText.innerText = '';
+									item.classList.add('done');
+									item.classList.remove('opened');
+									openedItem.classList.add('done');
+									openedItem.classList.remove('opened');
 									openedItem = null;
 									disableClick = false;
+									setTimeout(function() {
+										if(++done*2 == totalItems) {
+											stopTimer();
+											document.getElementById('board').innerHTML = '<p>Congratulations!<br><a href="./">play again</p>';
+										}
+									}, 1000);
 								}, 500);
 
-								if(openedItem !== item) {
-									setFails(++fails);
-								}
+							} else {
 
-							}, 500);
+								// no match
+								disableClick = true;
+								setTimeout(function() {
+									
+									var openedItemText = openedItem.getElementsByTagName('b')[0];
+
+									item.classList.remove('opened');
+									openedItem.classList.remove('opened');
+
+									itemText.classList.remove('active');
+									openedItemText.classList.remove('active');
+
+									setTimeout(function() {
+										itemText.innerText = '';
+										openedItemText.innerText = '';
+										openedItem = null;
+										disableClick = false;
+									}, 500);
+
+									if(openedItem !== item) {
+										document.getElementById('fails').innerText = ++fails;
+									}
+
+								}, 500);
+
+							}
 
 						}
 
@@ -146,8 +150,15 @@
 
 				}
 
-			}
-		})(i);
+			})(i);
+
+		}
+
 	}
+
+	/* the flow */
+	makeBoard();
+	createPairs();
+	startGame();
 
 })();
