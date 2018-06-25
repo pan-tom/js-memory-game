@@ -105,10 +105,12 @@
 								openedItem.classList.remove('opened');
 								openedItem = null;
 								disableClick = false;
-								if(++done*2 == totalItems) {
-									stopTimer();
-									document.getElementById('board').innerHTML = '<p>Congratulations!<br><a href="./">play again</p>';
-								}
+								setTimeout(function() {
+									if(++done*2 == totalItems) {
+										stopTimer();
+										document.getElementById('board').innerHTML = '<p>Congratulations!<br><a href="./">play again</p>';
+									}
+								}, 1000);
 							}, 500);
 
 						} else {
