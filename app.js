@@ -103,8 +103,9 @@
 								disableClick = false;
 								setTimeout(() => {
 									if(++done*2 == totalItems) {
+										// game finished
 										stopTimer();
-										document.getElementById('board').innerHTML = '<p>Congratulations!<br><a href="./">play again</p>';
+										document.getElementById('result').innerHTML += '<p>Congratulations!<br><a href="./">play again</p>';
 									}
 								}, 1000);
 							}, 500);
