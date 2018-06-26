@@ -1,11 +1,11 @@
-(function() {
+(() => {
 	"use strict";
 
 	// must be even
 	var totalItems = 20;
 
 	// game board
-	var makeBoard = function() {
+	var makeBoard = () => {
 		for(var i=0; i<totalItems; i++) {
 			document.getElementById('board').innerHTML += '<span id="item_'+(i+1)+'" class="item"><b></b></span>';
 		}
@@ -14,7 +14,7 @@
 
 	// random pairs
 	var pairs = [];
-	var createPairs = function() {
+	var createPairs = () => {
 		var number = 1;
 		var evenFlag = 0;
 		do {
@@ -36,113 +36,105 @@
 	}
 
 	// zero padding
-	var setPad = function(val) {
-		return (val < 10 ? '0' : '')+val;
-	}
+	var setPad = (val) => (val < 10 ? '0' : '')+val;
 
 	// timer
 	var timerInt = null;
-	var startTimer = function() {
+	var startTimer = () => {
 		var totalSeconds = 0;
-		timerInt = setInterval(function() {
+		timerInt = setInterval(() => {
 			totalSeconds++;
 			document.getElementById('timer').innerText = setPad(parseInt(totalSeconds / 3600)) + ':' + setPad(parseInt(totalSeconds / 60) % 60) + ':' + setPad(totalSeconds % 60);
 		}, 1000);
 	}
-	var stopTimer = function() {
-		clearInterval(timerInt);
-	}
+	var stopTimer = () => clearInterval(timerInt);
 
 	// game actions
-	var startGame = function() {
+	var startGame = () => {
 		var fails = 0;
 		var done = 0;
 		var openedItem = null;
 		var disableClick = false;
 		var items = document.getElementsByClassName('item');
-		for(var i=0; i<items.length; i++) {
+		for(var index=0; index<items.length; index++) {
 
-			(function(index) {
+			// item clicked
+			items[index].onclick = (e) => {
 
-				// item clicked
-				items[index].onclick = function() {
+				if(timerInt === null) {
+					startTimer();
+				}
 
-					if(timerInt === null) {
-						startTimer();
-					}
-
-					if(!disableClick) {
+				if(!disableClick) {
 					
-						var item = items[index];
+					var item = e.target;
 
-						if(!item.classList.contains('done')) {
+					if(!item.classList.contains('done')) {
 
-							var pair = pairs[item.getAttribute('id')];
-							var itemText = item.getElementsByTagName('b')[0];
+						var pair = pairs[item.getAttribute('id')];
+						var itemText = item.getElementsByTagName('b')[0];
 
-							itemText.innerText = setPad(pair);
-							itemText.classList.add('active');
+						itemText.innerText = setPad(pair);
+						itemText.classList.add('active');
 
-							// css classes
-							if(item.classList.contains('opened')) {
-								item.classList.remove('opened');
-							} else {
-								item.classList.add('opened');
-							}
+						// css classes
+						if(item.classList.contains('opened')) {
+							item.classList.remove('opened');
+						} else {
+							item.classList.add('opened');
+						}
+						
+						// pair comparison
+						if(openedItem === null) {
+
+							// just one item opened
+							openedItem = item;
+
+						} else if(openedItem !== item && pairs[openedItem.getAttribute('id')] === pair) {
 							
-							// pair comparison
-							if(openedItem === null) {
+							// pair matched
+							disableClick = true;
+							setTimeout(() => {
+								item.classList.add('done');
+								item.classList.remove('opened');
+								openedItem.classList.add('done');
+								openedItem.classList.remove('opened');
+								openedItem = null;
+								disableClick = false;
+								setTimeout(() => {
+									if(++done*2 == totalItems) {
+										stopTimer();
+										document.getElementById('board').innerHTML = '<p>Congratulations!<br><a href="./">play again</p>';
+									}
+								}, 1000);
+							}, 500);
 
-								// just one item opened
-								openedItem = item;
+						} else {
 
-							} else if(openedItem !== item && pairs[openedItem.getAttribute('id')] === pair) {
+							// no match
+							disableClick = true;
+							setTimeout(() => {
 								
-								// pair matched
-								disableClick = true;
-								setTimeout(function() {
-									item.classList.add('done');
-									item.classList.remove('opened');
-									openedItem.classList.add('done');
-									openedItem.classList.remove('opened');
+								var openedItemText = openedItem.getElementsByTagName('b')[0];
+
+								item.classList.remove('opened');
+								openedItem.classList.remove('opened');
+
+								itemText.classList.remove('active');
+								openedItemText.classList.remove('active');
+
+								setTimeout(() => {
+									itemText.innerText = '';
+									openedItemText.innerText = '';
 									openedItem = null;
 									disableClick = false;
-									setTimeout(function() {
-										if(++done*2 == totalItems) {
-											stopTimer();
-											document.getElementById('board').innerHTML = '<p>Congratulations!<br><a href="./">play again</p>';
-										}
-									}, 1000);
 								}, 500);
 
-							} else {
+								if(openedItem !== item) {
+									document.getElementById('fails').innerText = ++fails;
+								}
 
-								// no match
-								disableClick = true;
-								setTimeout(function() {
-									
-									var openedItemText = openedItem.getElementsByTagName('b')[0];
-
-									item.classList.remove('opened');
-									openedItem.classList.remove('opened');
-
-									itemText.classList.remove('active');
-									openedItemText.classList.remove('active');
-
-									setTimeout(function() {
-										itemText.innerText = '';
-										openedItemText.innerText = '';
-										openedItem = null;
-										disableClick = false;
-									}, 500);
-
-									if(openedItem !== item) {
-										document.getElementById('fails').innerText = ++fails;
-									}
-
-								}, 500);
-
-							}
+							}, 500);
 
 						}
 
@@ -150,7 +142,7 @@
 
 				}
 
-			})(i);
+			}
 
 		}
 
