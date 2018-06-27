@@ -101,13 +101,14 @@
 								openedItem.classList.remove('opened');
 								openedItem = null;
 								disableClick = false;
-								setTimeout(() => {
-									if(++done*2 == totalItems) {
-										// game finished
-										stopTimer();
-										document.getElementById('result').innerHTML += '<p>Congratulations!<br><a href="./">play again</p>';
-									}
-								}, 1000);
+								if(++done*2 == totalItems) {
+									// game finished
+									stopTimer();
+									setTimeout(() => {
+										document.getElementById('result').innerHTML 
+											+= '<p>Congratulations!<br><a href="./">play again</p>';
+									}, 1000);
+								}
 							}, 500);
 
 						} else {
