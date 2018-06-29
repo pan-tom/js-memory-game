@@ -2,25 +2,25 @@
 	"use strict";
 
 	// must be even
-	var totalItems = 20;
+	const totalItems = 20;
 
 	// game board
-	var makeBoard = () => {
-		for(var i=0; i<totalItems; i++) {
+	const makeBoard = () => {
+		for(let i=0; i<totalItems; i++) {
 			document.getElementById('board').innerHTML += '<span id="item_'+(i+1)+'" class="item"><b></b></span>';
 		}
 		document.getElementById('result').innerHTML = '<p>Failures: <span id="fails">0</span><br>Time: <span id="timer">00:00:00</span></p>';
 	}
 
 	// random pairs
-	var pairs = [];
-	var createPairs = () => {
-		var number = 1;
-		var evenFlag = 0;
+	let pairs = [];
+	const createPairs = () => {
+		let number = 1;
+		let evenFlag = 0;
 		do {
 			
 			// from 1 to totalItems
-			var index = Math.floor(Math.random()*totalItems) + 1;
+			let index = Math.floor(Math.random()*totalItems) + 1;
 
 			if(typeof pairs['item_'+index] === 'undefined') {
 
@@ -36,27 +36,27 @@
 	}
 
 	// zero padding
-	var setPad = (val) => (val < 10 ? '0' : '')+val;
+	let setPad = (val) => (val < 10 ? '0' : '')+val;
 
 	// timer
-	var timerInt = null;
-	var startTimer = () => {
-		var totalSeconds = 0;
+	let timerInt = null;
+	const startTimer = () => {
+		let totalSeconds = 0;
 		timerInt = setInterval(() => {
 			totalSeconds++;
 			document.getElementById('timer').innerText = setPad(parseInt(totalSeconds / 3600)) + ':' + setPad(parseInt(totalSeconds / 60) % 60) + ':' + setPad(totalSeconds % 60);
 		}, 1000);
 	}
-	var stopTimer = () => clearInterval(timerInt);
+	const stopTimer = () => clearInterval(timerInt);
 
 	// game actions
-	var startGame = () => {
-		var fails = 0;
-		var done = 0;
-		var openedItem = null;
-		var disableClick = false;
-		var items = document.getElementsByClassName('item');
-		for(var index=0; index<items.length; index++) {
+	const startGame = () => {
+		let fails = 0;
+		let done = 0;
+		let openedItem = null;
+		let disableClick = false;
+		let items = document.getElementsByClassName('item');
+		for(let index=0; index<items.length; index++) {
 
 			// item clicked
 			items[index].onclick = (e) => {
@@ -67,12 +67,12 @@
 
 				if(!disableClick) {
 					
-					var item = e.target;
+					let item = e.target;
 
 					if(!item.classList.contains('done')) {
 
-						var pair = pairs[item.getAttribute('id')];
-						var itemText = item.getElementsByTagName('b')[0];
+						let pair = pairs[item.getAttribute('id')];
+						let itemText = item.getElementsByTagName('b')[0];
 
 						itemText.innerText = setPad(pair);
 						itemText.classList.add('active');
@@ -117,7 +117,7 @@
 							disableClick = true;
 							setTimeout(() => {
 								
-								var openedItemText = openedItem.getElementsByTagName('b')[0];
+								let openedItemText = openedItem.getElementsByTagName('b')[0];
 
 								item.classList.remove('opened');
 								openedItem.classList.remove('opened');
