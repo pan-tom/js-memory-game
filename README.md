@@ -1,1 +1,1 @@
-Demo: https://tomky.enedue.com/apps/js-memory-game
+Demo: http://memory-js.apps.enedue.com/
