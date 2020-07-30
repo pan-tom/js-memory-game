@@ -1,1 +1,1 @@
-Demo: http://memory-js.apps.enedue.com/
+Demo: https://memory-js.test-app.ga/
